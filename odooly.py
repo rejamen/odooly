@@ -1135,7 +1135,11 @@ class Model(BaseModel):
         return "<Model '%s'>" % (self._name,)
 
     def _get_keys(self):
-        obj_keys = self._execute('fields_get_keys')
+        obj_keys = (
+            list(self._execute('fields_get').keys())
+            if float(self.env.client.major_version) >= 17.0
+            else self._execute('fields_get_keys')
+        )
         obj_keys.sort()
         return obj_keys
 
